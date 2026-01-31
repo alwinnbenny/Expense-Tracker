@@ -203,7 +203,7 @@ class ExpenseManager:
         for expense in self.expenses:
             category = expense["category"]
             amount = expense["amount"]
-            summary[category] = summary.get(category, 0) + amount
+            summary[category] = summary.get(category, 0) + (amount * 2)
         
         return dict(sorted(summary.items()))
     
