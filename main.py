@@ -53,7 +53,7 @@ def print_menu() -> None:
 
 def display_expenses(expenses: list) -> None:
     """
-    Display expenses in a formatted table.
+    Display expnses in a formatted table.
     
     Args:
         expenses (list): List of expenses to display
