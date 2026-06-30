@@ -1,98 +1,189 @@
-# Smart Expense Tracker
+# 💸 Smart Expense Tracker
 
-A modern, feature-rich expense management and analytics web application built with a Django REST API, a MySQL database, and a React.js (Vite) frontend.
-
-It includes advanced features like:
-- **CRUD Operations**: Log, view, edit, and delete expenses.
-- **Daily Spending Limit**: Custom limits with warnings when spending is exceeded.
-- **Suspicious Activity Detection**: Automatically flags expenses that exceed 5x the average spending in their category.
-- **Visual Analytics**: Interactive charts using Recharts for monthly spending trends, category breakdowns, and limits.
+A modern, full-stack expense management and analytics web application built with a **Django REST API** backend, **MySQL** database, and a **React.js + Vite** frontend.
 
 ---
 
-## Project Structure
+## ✨ Features
+
+- **📋 Expense Management** — Log, view, edit, and delete expenses with amount, category, date, and description
+- **🚨 Suspicious Activity Detection** — Automatically flags expenses that exceed 5× the average spending in their category
+- **📅 Daily Spending Limit** — Set a custom daily budget with real-time warnings when exceeded
+- **📊 Visual Analytics** — Interactive charts (monthly trends, category breakdowns, daily spending) powered by Recharts
+- **🔗 RESTful API** — Clean Django REST Framework API with full CRUD support
+
+---
+
+## 🛠 Tech Stack
+
+| Layer     | Technology                              |
+|-----------|-----------------------------------------|
+| Frontend  | React 18, Vite, React Router, Recharts  |
+| Backend   | Django 5, Django REST Framework         |
+| Database  | MySQL                                   |
+| HTTP      | Axios                                   |
+| Config    | python-decouple, django-cors-headers    |
+
+---
+
+## 📁 Project Structure
 
 ```
 Expense Tracker/
-├── backend/            # Django REST API (Python 3)
-│   ├── backend/        # Configuration and settings
-│   ├── expenses/       # Core app logic, models, views, and business logic
-│   └── manage.py
-├── frontend/           # React.js SPA (Vite + Javascript)
-│   ├── src/            # Components, pages, and design system
-│   ├── package.json
-│   └── vite.config.js
+├── backend/                    # Django REST API
+│   ├── backend/                # Project settings, URLs, WSGI
+│   │   ├── settings.py
+│   │   └── urls.py
+│   ├── expenses/               # Core app
+│   │   ├── models.py           # Expense & AppSettings models
+│   │   ├── views.py            # API ViewSets
+│   │   ├── serializers.py
+│   │   ├── business_logic.py   # Suspicious activity detection
+│   │   └── urls.py
+│   ├── manage.py
+│   ├── seed_data.py            # Optional sample data seeder
+│   └── requirements.txt
+├── frontend/                   # React + Vite SPA
+│   ├── src/
+│   │   ├── pages/              # Dashboard, Expenses, Analytics
+│   │   ├── components/         # Sidebar, StatCard, ExpenseForm, etc.
+│   │   ├── api/                # Axios API calls
+│   │   └── main.jsx
+│   ├── index.html
+│   └── package.json
 └── README.md
 ```
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- MySQL Server (running locally on port 3306)
+
+- **Python** 3.11+
+- **Node.js** 18+
+- **MySQL** server running locally on port 3306
 
 ---
 
-### Backend Setup (Django)
+### 🐍 Backend Setup (Django)
 
-1. **Navigate to backend folder**:
+1. **Navigate to the backend folder:**
    ```bash
    cd backend
    ```
 
-2. **Install requirements**:
+2. **Create and activate a virtual environment:**
+   ```bash
+   python -m venv venv
+   # Windows
+   venv\Scripts\activate
+   # macOS/Linux
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Configure Database**:
-   Update `backend/.env` with your MySQL database configurations:
+4. **Create the MySQL database:**
+   ```sql
+   CREATE DATABASE expense_tracker;
+   ```
+
+5. **Configure environment variables:**
+   Create a `.env` file inside the `backend/` folder:
    ```env
    DB_NAME=expense_tracker
    DB_USER=root
-   DB_PASSWORD=your_password
+   DB_PASSWORD=your_mysql_password
    DB_HOST=127.0.0.1
    DB_PORT=3306
+   SECRET_KEY=your_django_secret_key
+   DEBUG=True
    ```
 
-4. **Create the database**:
-   Make sure you create the `expense_tracker` database in MySQL.
-
-5. **Run migrations**:
+6. **Run database migrations:**
    ```bash
    python manage.py migrate
    ```
 
-6. **Seed sample data (Optional)**:
+7. **(Optional) Seed sample data:**
    ```bash
    python seed_data.py
    ```
 
-7. **Start the Django server**:
+8. **Start the Django development server:**
    ```bash
    python manage.py runserver
    ```
-   The backend API will run on `http://localhost:8000/`.
+   > API available at `http://localhost:8000/api/`
 
 ---
 
-### Frontend Setup (React)
+### ⚛️ Frontend Setup (React)
 
-1. **Navigate to frontend folder**:
+1. **Navigate to the frontend folder:**
    ```bash
-   cd ../frontend
+   cd frontend
    ```
 
-2. **Install dependencies**:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Start development server**:
+3. **Start the development server:**
    ```bash
    npm run dev
    ```
-   The frontend application will run on `http://localhost:5173/`.
+   > App available at `http://localhost:5173/`
+
+---
+
+## 📡 API Endpoints
+
+Base URL: `http://localhost:8000/api/`
+
+| Method   | Endpoint               | Description                     |
+|----------|------------------------|---------------------------------|
+| `GET`    | `/expenses/`           | List all expenses                |
+| `POST`   | `/expenses/`           | Create a new expense             |
+| `GET`    | `/expenses/{id}/`      | Retrieve a specific expense      |
+| `PUT`    | `/expenses/{id}/`      | Update an expense                |
+| `DELETE` | `/expenses/{id}/`      | Delete an expense                |
+| `GET`    | `/settings/`           | Get app settings (daily limit)   |
+| `PUT`    | `/settings/{id}/`      | Update app settings              |
+
+---
+
+## 🧠 Business Logic
+
+### Suspicious Activity Detection
+An expense is automatically flagged as **suspicious** when its amount exceeds **5× the average** of all previous expenses in the same category. The reason is stored alongside the expense for transparency.
+
+### Daily Spending Limit
+A configurable daily spending limit is stored in the `AppSettings` singleton. The frontend displays a warning banner on the Dashboard when today's total spending exceeds this limit.
+
+---
+
+## 📸 Pages
+
+| Page        | Description                                                         |
+|-------------|---------------------------------------------------------------------|
+| **Dashboard**  | Overview stats, recent expenses, and daily limit status          |
+| **Expenses**   | Full expense table with add, edit, delete, and suspicious badges |
+| **Analytics**  | Monthly trends, category pie chart, and daily spending bar chart |
+
+---
+
+## 🔒 Environment Variables
+
+The `backend/.env` file is excluded from version control via `.gitignore`. Never commit secrets to the repository.
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
